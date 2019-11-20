@@ -1,0 +1,35 @@
+from typing import Union
+
+from dal.database.config import DB_CONFIG
+
+try:
+    import cx_Oracle as oracle_engine
+except ModuleNotFoundError:
+    pass
+
+try:
+    import pymysql as mariadb_engine
+except ModuleNotFoundError:
+    pass
+
+selected_engine: str = DB_CONFIG["db_engine"]
+
+# Select the connection that is appropriate for the selected database
+# If the selected database is not supported, raise an error.
+if selected_engine == "oracle":
+    conn: oracle_engine.Connection = oracle_engine.connect(
+        f'{DB_CONFIG["user"]}/{DB_CONFIG["password"]}@localhost/XE'
+    )
+elif selected_engine == "mariadb":
+    config_data: dict = DB_CONFIG.copy()
+    del config_data["db_engine"]
+    conn: mariadb_engine.Connection = mariadb_engine.connect(**config_data)
+else:
+    raise SystemError(f'DB engine "{DB_CONFIG["db_engine"]}" is not supported.')
+
+###############################################################################
+
+
+def get_conn() -> Union[mariadb_engine.Connection, oracle_engine.Connection]:
+    # Remember to close the cursors!
+    return conn

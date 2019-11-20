@@ -1,0 +1,2 @@
+class BLLException(Exception):
+    pass

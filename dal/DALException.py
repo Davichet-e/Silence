@@ -1,0 +1,2 @@
+class DALException(Exception):
+    pass

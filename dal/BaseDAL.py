@@ -1,0 +1,19 @@
+from dal.database.config import DB_CONFIG
+from dal.impl.MariaDBDAL import MariaDBDAL
+from dal.impl.OracleDAL import OracleDAL
+
+DAL_IMPLS = {
+    "oracle": OracleDAL,
+    "mariadb": MariaDBDAL,
+}
+
+
+class BaseDAL:
+    def __init__(self):
+        self.impl = DAL_IMPLS[DB_CONFIG["db_engine"]]()
+
+    def query(self, q, params=None):
+        return self.impl.query(q, params)
+
+    def execute(self, q, params=None):
+        return self.impl.execute(q, params)
