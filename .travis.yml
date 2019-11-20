@@ -1,0 +1,17 @@
+sudo: required
+language: python
+python:
+  - "3.7"
+
+addons:
+  mariadb: "10.4"
+
+install:
+  - pip install -r requirements.txt
+  - sudo mysql -e 'CREATE DATABASE grados;'
+  - sudo mysql -e "CREATE USER 'iissi_user'@'localhost' IDENTIFIED BY 'iissi\$user';"
+  - sudo mysql -e "GRANT ALL ON grados.* TO 'iissi_user'@'localhost';"
+
+script:
+  - python3 populate_database.py
+  - python3 run_tests.py
