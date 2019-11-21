@@ -33,25 +33,23 @@ for c in test_classes:
 
     # If the user has specified which test classes to run,
     # check that the present class is in the list
-    if classes_to_run and c_name.lower() not in classes_to_run:
-        continue
+    if not classes_to_run or c_name.lower() in classes_to_run:
+        print(
+            f"\nRunning tests from class {c_name}\n"
+            "---------------------------------------"
+        )
 
-    print(
-        f"\nRunning tests from class {c_name}\n"
-        "---------------------------------------"
-    )
-
-    # Find all test methods for the current class and run each of them
-    test_methods = inspect.getmembers(test_class, predicate=inspect.ismethod)
-    for m_name, m in test_methods:
-        try:
-            m()
-            passed_tests += 1
-            print(Fore.GREEN + f"\t• {c_name}.{m_name} - OK" + Style.RESET_ALL)
-        except Exception:
-            failed_tests += 1
-            print(Fore.RED + f"\t• {c_name}.{m_name} - FAIL" + Style.RESET_ALL)
-            traceback.print_exc()
+        # Find all test methods for the current class and run each of them
+        test_methods = inspect.getmembers(test_class, predicate=inspect.ismethod)
+        for m_name, m in test_methods:
+            try:
+                m()
+                passed_tests += 1
+                print(Fore.GREEN + f"\t• {c_name}.{m_name} - OK" + Style.RESET_ALL)
+            except Exception:
+                failed_tests += 1
+                print(Fore.RED + f"\t• {c_name}.{m_name} - FAIL" + Style.RESET_ALL)
+                traceback.print_exc()
 
 
 # Display the results

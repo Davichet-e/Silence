@@ -1,10 +1,9 @@
-
 # This file is part of the Silence framework.
 # Silence was developed by the IISSI1-TI team
 # (Agustín Borrego, Daniel Ayala, Carlos Ortiz, Inma Hernández & David Ruiz)
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
-from typing import Optional
+from typing import Optional, Union
 
 import pymysql
 from pymysql.cursors import DictCursor
@@ -14,11 +13,12 @@ from dal.database.db_connection import get_conn
 from dal.transaction import get_g
 
 
-
 class MariaDBDAL:
     """The base Data Access Layer class (implementation for MariaDB/MySQL)"""
 
-    def query(self, q: str, params: Optional[tuple] = None) -> Optional[tuple]:
+    def query(
+        self, q: str, params: Optional[Union[tuple, list, dict]] = None
+    ) -> Optional[tuple]:
         """Query method to retrieve information"""
         # Fetch the connection and get a cursor
         conn: pymysql.Connection = get_conn()
@@ -29,8 +29,7 @@ class MariaDBDAL:
                 cursor.execute(q, params)
             else:
                 cursor.execute(q)
-            res: tuple = cursor.fetchall()
-            return res
+            return cursor.fetchall()
         except Exception as exc:
             # If anything happens, wrap the exceptions in a DALException
             raise DALException(exc) from exc
@@ -38,7 +37,9 @@ class MariaDBDAL:
             # Close the cursor
             cursor.close()
 
-    def execute(self, q: str, params: Optional[tuple] = None) -> Optional[int]:
+    def execute(
+        self, q: str, params: Optional[Union[tuple, list, dict]] = None
+    ) -> Optional[int]:
         """Execute method to update information"""
         conn: pymysql.Connection = get_conn()
         cursor: DictCursor = conn.cursor(DictCursor)

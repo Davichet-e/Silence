@@ -29,11 +29,9 @@ class OracleDAL:
             columns = [i[0] for i in cursor.description]
 
             # Return a list of dictionary
-            res: List[dict] = [
+            return [
                 {col: data[i] for i, col in enumerate(columns)} for data in all_data
             ]
-
-            return res
         except Exception as exc:
             # If anything happens, wrap the exceptions in a DALException
             raise DALException(exc) from exc
