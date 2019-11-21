@@ -5,8 +5,6 @@
 
 from typing import Dict, List, Optional
 
-from pymysql.cursors import DictCursor
-
 from dal.DALException import DALException
 from dal.database.db_connection import get_conn, oracle_engine
 from dal.transaction import get_g
@@ -19,7 +17,7 @@ class OracleDAL:
         """Query method to retrieve information"""
         # Fetch the connection and get a cursor
         conn: oracle_engine.Connection = get_conn()
-        cursor: DictCursor = conn.cursor(DictCursor)
+        cursor: oracle_engine.Cursor = conn.cursor()
         try:
             # Execute the query, with or without parameters and return the result
             if params:
@@ -27,7 +25,7 @@ class OracleDAL:
             else:
                 cursor.execute(q)
 
-            all_data = cursor.fetchall()
+            all_data: List[tuple] = cursor.fetchall()
             columns = [i[0] for i in cursor.description]
 
             # Return a list of dictionary
@@ -58,7 +56,7 @@ class OracleDAL:
     def execute(self, q: str, params: Optional[tuple] = None) -> int:
         """Execute method to update information"""
         conn: oracle_engine.Connection = get_conn()
-        cursor: DictCursor = conn.cursor(DictCursor)
+        cursor: oracle_engine.Cursor = conn.cursor()
 
         # Check whether we are under autocommit mode or not
         # (it will be false inside a transaction)
@@ -88,7 +86,7 @@ class OracleDAL:
             q = f"{q} returning {oid_name} into : {len(params) + 1}"
             # This transformation is for add a new element
 
-            params += new_oid
+            params += (new_oid,)
 
             # Execute the query, with or without parameters and return the result
             if params:
