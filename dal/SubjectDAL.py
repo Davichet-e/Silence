@@ -3,7 +3,7 @@
 # (Agustín Borrego, Daniel Ayala, Carlos Ortiz, Inma Hernández & David Ruiz)
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
-from typing import Optional
+from typing import Optional, Dict, Any, Tuple
 
 from dal.BaseDAL import BaseDAL
 
@@ -17,12 +17,9 @@ class SubjectDAL(BaseDAL):
             *All the subjects of the table
             *None value if we cannot find the OID
         """
+        return self.query("SELECT * FROM Subjects")
 
-        q = "SELECT * FROM Subjects"
-        subjects: tuple = self.query(q)
-        return subjects
-
-    def get_by_oid(self, oid: int) -> Optional[tuple]:
+    def get_by_oid(self, oid: int) -> Optional[Dict[str, Any]]:
         """
         Get subject by OID
         -Input:
@@ -32,17 +29,18 @@ class SubjectDAL(BaseDAL):
             *None value if we cannot find the OID
         """
 
-        subject: Optional[tuple] = None
         q = "SELECT * FROM Subjects WHERE subjectId = %s"
         params = (oid,)
 
-        res: tuple = self.query(q, params)
+        res: Tuple[Dict[str, Any], ...] = self.query(q, params)
+
         if len(res):
             subject = res[0]
-
+        else:
+            subject = None
         return subject
 
-    def get_by_acronym(self, acronym: str) -> Optional[tuple]:
+    def get_by_acronym(self, acronym: str) -> Optional[Dict[str, Any]]:
         """
         Get subject by acronym
         -Input:
@@ -51,18 +49,19 @@ class SubjectDAL(BaseDAL):
             *Only one subject
             *None value if we cannot find the acronym
         """
-
-        subject: Optional[tuple] = None
         q = "SELECT * FROM Subjects WHERE acronym = %s"
         params = (acronym,)
 
-        res: tuple = self.query(q, params)
+        res: Tuple[Dict[str, Any], ...] = self.query(q, params)
+
         if len(res):
             subject = res[0]
+        else:
+            subject = None
 
         return subject
 
-    def get_by_name(self, name: str) -> tuple:
+    def get_by_name(self, name: str) -> Tuple[Dict[str, Any], ...]:
         """
         Get subject by name
         -Input:
@@ -72,13 +71,15 @@ class SubjectDAL(BaseDAL):
             *None value if we cannot find the name
         """
 
-        subject: Optional[tuple] = None
         q = "SELECT * FROM Subjects WHERE name = %s"
         params = (name,)
 
-        res: tuple = self.query(q, params)
+        res: Tuple[Dict[str, Any]] = self.query(q, params)
+        
         if len(res):
             subject = res[0]
+        else:
+            subject = ()
 
         return subject
 
@@ -101,8 +102,7 @@ class SubjectDAL(BaseDAL):
 
         q = "INSERT INTO subjects (name, acronym, credits, course, type, degreeId) VALUES (%s, %s, %s, %s, %s, %s)"
         params = (name, acronym, n_credits, course, subject_type, degreeId)
-        res = self.execute(q, params)
-        return res
+        return self.execute(q, params)
 
     def update(
         self,
@@ -124,8 +124,7 @@ class SubjectDAL(BaseDAL):
 
         q = "UPDATE subjects SET name = %s, acronym = %s, credits = %s, course = %s, type = %s, degreeId = %s WHERE subjectId = %s"
         params = (name, acronym, n_credits, course, subject_type, degreeId, oid)
-        res = self.execute(q, params)
-        return res
+        return self.execute(q, params)
 
     def delete(self, oid: int) -> int:
         """
@@ -138,5 +137,4 @@ class SubjectDAL(BaseDAL):
 
         q = "DELETE FROM subjects WHERE subjectId = %s"
         params = (oid,)
-        res = self.execute(q, params)
-        return res
+        return self.execute(q, params)

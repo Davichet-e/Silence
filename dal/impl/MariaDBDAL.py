@@ -3,7 +3,7 @@
 # (Agustín Borrego, Daniel Ayala, Carlos Ortiz, Inma Hernández & David Ruiz)
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
-from typing import Optional, Union
+from typing import Optional, Union, Tuple, Dict, Any
 
 import pymysql
 from pymysql.cursors import DictCursor
@@ -18,7 +18,7 @@ class MariaDBDAL:
 
     def query(
         self, q: str, params: Optional[Union[tuple, list, dict]] = None
-    ) -> Optional[tuple]:
+    ) -> Tuple[Dict[str, Any]]:
         """Query method to retrieve information"""
         # Fetch the connection and get a cursor
         conn: pymysql.Connection = get_conn()
@@ -37,9 +37,7 @@ class MariaDBDAL:
             # Close the cursor
             cursor.close()
 
-    def execute(
-        self, q: str, params: Optional[Union[tuple, list, dict]] = None
-    ) -> Optional[int]:
+    def execute(self, q: str, params: Optional[Union[tuple, list, dict]] = None) -> int:
         """Execute method to update information"""
         conn: pymysql.Connection = get_conn()
         cursor: DictCursor = conn.cursor(DictCursor)

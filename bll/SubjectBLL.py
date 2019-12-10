@@ -17,20 +17,23 @@ class SubjectBLL(SubjectDAL):
         name: str,
         acronym: str,
         n_credits: int,
-        course: Optional[int],
-        subject_type: Optional[str],
-        degreeId: Optional[int],
+        course: int,
+        subject_type: str,
+        degree_id: int,
     ) -> int:
         """Check that the name and acronym are not empty"""
 
         check_not_null(name, "The subject's name cannot be empty")
         check_not_null(acronym, "The subject's acronym cannot be empty")
         check_not_null(n_credits, "The subject's credits cannot be empty")
+        check_not_null(course, "The subject's course cannot be empty")
+        check_not_null(subject_type, "The subject's subject type cannot be empty")
+        check_not_null(degree_id, "The subject's degree_id cannot be empty")
 
         # Insert the new subject
         try:
             oid = super().insert(
-                name, acronym, n_credits, course, subject_type, degreeId
+                name, acronym, n_credits, course, subject_type, degree_id
             )
         except DALException as exc:
             raise BLLException(exc) from exc
@@ -43,9 +46,9 @@ class SubjectBLL(SubjectDAL):
         name: str,
         acronym: str,
         n_credits: int,
-        course: Optional[int],
-        subject_type: Optional[str],
-        degreeId: Optional[int],
+        course: int,
+        subject_type: str,
+        degree_id: int,
     ) -> int:
         """Check that the name and acronym are not empty, and that the OID exists"""
 
@@ -53,10 +56,13 @@ class SubjectBLL(SubjectDAL):
         check_not_null(name, "The subject's name cannot be empty")
         check_not_null(acronym, "The subject's acronym cannot be empty")
         check_not_null(n_credits, "The subject's credits cannot be empty")
+        check_not_null(course, "The subject's course cannot be empty")
+        check_not_null(subject_type, "The subject's subject type cannot be empty")
+        check_not_null(degree_id, "The subject's degree_id cannot be empty")
 
         try:
             new_oid = super().update(
-                oid, name, acronym, n_credits, course, subject_type, degreeId
+                oid, name, acronym, n_credits, course, subject_type, degree_id
             )
         except DALException as exc:
             raise BLLException(exc) from exc

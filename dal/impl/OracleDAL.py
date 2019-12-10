@@ -3,7 +3,7 @@
 # (Agustín Borrego, Daniel Ayala, Carlos Ortiz, Inma Hernández & David Ruiz)
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from dal.DALException import DALException
 from dal.database.db_connection import get_conn, oracle_engine
@@ -13,7 +13,9 @@ from dal.transaction import get_g
 class OracleDAL:
     """The base Data Access Layer class (implementation for Oracle)"""
 
-    def query(self, q: str, params: Optional[tuple] = None) -> Optional[List[dict]]:
+    def query(
+        self, q: str, params: Optional[Union[tuple, list, dict]] = None
+    ) -> List[dict]:
         """Query method to retrieve information"""
         # Fetch the connection and get a cursor
         conn: oracle_engine.Connection = get_conn()
@@ -51,7 +53,7 @@ class OracleDAL:
             table_name = q.upper().strip().split(" ")[2].strip()
         return table_name
 
-    def execute(self, q: str, params: Optional[tuple] = None) -> int:
+    def execute(self, q: str, params: Optional[Union[tuple]] = None) -> int:
         """Execute method to update information"""
         conn: oracle_engine.Connection = get_conn()
         cursor: oracle_engine.Cursor = conn.cursor()
@@ -86,11 +88,7 @@ class OracleDAL:
 
             params += (new_oid,)
 
-            # Execute the query, with or without parameters and return the result
-            if params:
-                cursor.execute(q, params)
-            else:
-                cursor.execute(q)
+            cursor.execute(q)
 
             oid = new_oid.getvalue()[0]
             # If we're in autocommit mode (true by default), commit the operation

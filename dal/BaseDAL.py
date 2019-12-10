@@ -6,6 +6,7 @@
 from dal.database.config import DB_CONFIG
 from dal.impl.MariaDBDAL import MariaDBDAL
 from dal.impl.OracleDAL import OracleDAL
+from typing import Optional, Union, Dict, Any, Tuple
 
 DAL_IMPLS = {
     "oracle": OracleDAL,
@@ -17,8 +18,10 @@ class BaseDAL:
     def __init__(self):
         self.impl = DAL_IMPLS[DB_CONFIG["db_engine"]]()
 
-    def query(self, q, params=None):
+    def query(
+        self, q: str, params: Optional[Union[tuple, list, dict]] = None
+    ) -> Tuple[Dict[str, Any], ...]:
         return self.impl.query(q, params)
 
-    def execute(self, q, params=None):
+    def execute(self, q: str, params: Optional[Union[tuple, list, dict]] = None) -> int:
         return self.impl.execute(q, params)

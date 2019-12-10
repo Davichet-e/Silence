@@ -10,10 +10,11 @@ from flask import Blueprint, Response, jsonify, request
 from bll.BLLException import BLLException
 from bll.SubjectBLL import SubjectBLL
 
-subject_api = Blueprint('subject_api', __name__)
+subject_api = Blueprint("subject_api", __name__)
 subjectBLL = SubjectBLL()
 
 # Methods for the subject endpoint
+
 
 def get_fields() -> tuple:
     name: Optional[str] = request.form.get("name", default=None)
@@ -25,6 +26,7 @@ def get_fields() -> tuple:
 
     return name, acronym, n_credits, course, subject_type, degreeId
 
+
 @subject_api.route("/subject", methods=["GET"])
 def get_all() -> Tuple[Response, int]:
     """Returns all subjects in the system"""
@@ -32,19 +34,25 @@ def get_all() -> Tuple[Response, int]:
     res: Tuple[Response, int] = jsonify(subjects), 200
     return res
 
+
 @subject_api.route("/subject/<int:oid>", methods=["GET"])
 def get_by_oid(oid: int) -> Tuple[Response, int]:
     """Returns one subject by OID"""
-    res: Tuple[Response, int]
+    response: Response
+    response_code: int
 
     try:
         subject = subjectBLL.get_by_oid(oid)
-        res = jsonify(subject), 200
     except BLLException as exc:
-        error = {'error': str(exc)}
-        res = jsonify(error), 400
+        error = {"error": str(exc)}
+        response = jsonify(error)
+        response_code = 400
+    else:
+        response = jsonify(subject)
+        response_code = 404 if response is None else 200
 
-    return res
+    return response, response_code
+
 
 @subject_api.route("/subject", methods=["POST"])
 def insert() -> Tuple[Response, int]:
@@ -55,12 +63,13 @@ def insert() -> Tuple[Response, int]:
 
     try:
         oid: int = subjectBLL.insert(*subject_fields)
-        res = jsonify({'oid': oid}), 200
+        res = jsonify({"oid": oid}), 200
     except BLLException as exc:
-        error = {'error': str(exc)}
+        error = {"error": str(exc)}
         res = jsonify(error), 400
 
     return res
+
 
 @subject_api.route("/subject/<int:oid>", methods=["PUT"])
 def update(oid: int):
@@ -68,16 +77,17 @@ def update(oid: int):
     subject_fields: tuple = get_fields()
 
     res: Tuple[Response, int]
-    
+
     try:
         new_oid = subjectBLL.update(oid, *subject_fields)
-        res = jsonify({'oid': new_oid}), 200
+        res = jsonify({"oid": new_oid}), 200
     except BLLException as exc:
-        error = {'error': str(exc)}
+        error = {"error": str(exc)}
         res = jsonify(error), 400
 
     return res
-           
+
+
 @subject_api.route("/subject/<int:oid>", methods=["DELETE"])
 def delete(oid: int):
     """Deletes a subject by OID"""
@@ -85,9 +95,9 @@ def delete(oid: int):
 
     try:
         subjectBLL.delete(oid)
-        res = jsonify({'oid': oid}), 200
+        res = jsonify({"oid": oid}), 200
     except BLLException as exc:
-        error = {'error': str(exc)}
+        error = {"error": str(exc)}
         res = jsonify(error), 400
 
     return res
