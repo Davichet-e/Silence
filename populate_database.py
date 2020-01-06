@@ -3,14 +3,13 @@
 # (Agustín Borrego, Daniel Ayala, Carlos Ortiz, Inma Hernández & David Ruiz)
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
-from dal.database.db_connection import get_conn
+from dal.database.db_connection import conn
 
 # Method for destroying and creating the database tables
 # This shouldn't be modified, it uses the create_database.sql file
 def create_database(verbose=False) -> None:
-    conn = get_conn()
     cursor = conn.cursor()
-    with open("create_database.sql", encoding="utf-8") as f:
+    with open("grados(1).sql", encoding="utf-8") as f:
         for stmt in f.read().split(";"):
             if stmt.strip():
                 if verbose:

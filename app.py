@@ -1,6 +1,9 @@
-from flask import Flask, request
-from flask_session import Session
+from flask import Flask
 from flask_cors import CORS
+from flask_session import Session
+
+from api.subject import subject_api
+from api.group import group_api
 
 # The main initializer for the Flask application
 app = Flask(__name__)
@@ -18,9 +21,8 @@ CORS(app, supports_credentials=True)
 ################################################
 ### ↓↓↓↓↓ Register your API endpoints here ↓↓↓↓↓
 
-from api.subject import subject_api
-
 app.register_blueprint(subject_api, url_prefix="/v1")
+app.register_blueprint(group_api, url_prefix="/v2")
 
 ### ↑↑↑↑↑ Register your API endpoints here ↑↑↑↑↑
 ################################################
@@ -28,4 +30,3 @@ app.register_blueprint(subject_api, url_prefix="/v1")
 # Finally, if we're running this file, start the app
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
-

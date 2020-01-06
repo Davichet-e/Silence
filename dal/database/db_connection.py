@@ -21,20 +21,18 @@ selected_engine: str = DB_CONFIG["db_engine"]
 
 # Select the connection that is appropriate for the selected database
 # If the selected database is not supported, raise an error.
+
+conn: Union[oracle_engine.Connection, mariadb_engine.Connection]
+
 if selected_engine == "oracle":
-    conn: oracle_engine.Connection = oracle_engine.connect(
+    conn = oracle_engine.connect(
         f'{DB_CONFIG["user"]}/{DB_CONFIG["password"]}@localhost/XE'
     )
 elif selected_engine == "mariadb":
     config_data: dict = DB_CONFIG.copy()
     del config_data["db_engine"]
-    conn: mariadb_engine.Connection = mariadb_engine.connect(**config_data)
+    conn = mariadb_engine.connect(**config_data)
 else:
     raise SystemError(f'DB engine "{DB_CONFIG["db_engine"]}" is not supported.')
 
 ###############################################################################
-
-
-def get_conn() -> Union[mariadb_engine.Connection, oracle_engine.Connection]:
-    # Remember to close the cursors!
-    return conn

@@ -7,11 +7,11 @@ from typing import Optional, Tuple
 
 from flask import Blueprint, Response, jsonify, request
 
-from bll.BLLException import BLLException
-from bll.SubjectBLL import SubjectBLL
+from bll.bll_exception import BLLException
+from bll import subject_bll
+from dal import subject_dal
 
 subject_api = Blueprint("subject_api", __name__)
-subjectBLL = SubjectBLL()
 
 # Methods for the subject endpoint
 
@@ -30,9 +30,8 @@ def get_fields() -> tuple:
 @subject_api.route("/subject", methods=["GET"])
 def get_all() -> Tuple[Response, int]:
     """Returns all subjects in the system"""
-    subjects: tuple = subjectBLL.get_all()
-    res: Tuple[Response, int] = jsonify(subjects), 200
-    return res
+    subjects: tuple = subject_dal.get_all()
+    return jsonify(subjects), 200
 
 
 @subject_api.route("/subject/<int:oid>", methods=["GET"])
@@ -42,14 +41,14 @@ def get_by_oid(oid: int) -> Tuple[Response, int]:
     response_code: int
 
     try:
-        subject = subjectBLL.get_by_oid(oid)
+        subject = subject_dal.get_by_oid(oid)
     except BLLException as exc:
         error = {"error": str(exc)}
         response = jsonify(error)
         response_code = 400
     else:
         response = jsonify(subject)
-        response_code = 404 if response is None else 200
+        response_code = 200 if response else 404
 
     return response, response_code
 
@@ -62,7 +61,7 @@ def insert() -> Tuple[Response, int]:
     res: Tuple[Response, int]
 
     try:
-        oid: int = subjectBLL.insert(*subject_fields)
+        oid: int = subject_bll.insert(*subject_fields)
         res = jsonify({"oid": oid}), 200
     except BLLException as exc:
         error = {"error": str(exc)}
@@ -79,7 +78,7 @@ def update(oid: int):
     res: Tuple[Response, int]
 
     try:
-        new_oid = subjectBLL.update(oid, *subject_fields)
+        new_oid = subject_bll.update(oid, *subject_fields)
         res = jsonify({"oid": new_oid}), 200
     except BLLException as exc:
         error = {"error": str(exc)}
@@ -94,7 +93,7 @@ def delete(oid: int):
     res: Tuple[Response, int]
 
     try:
-        subjectBLL.delete(oid)
+        subject_bll.delete(oid)
         res = jsonify({"oid": oid}), 200
     except BLLException as exc:
         error = {"error": str(exc)}

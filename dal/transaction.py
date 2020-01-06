@@ -4,7 +4,7 @@
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
 from flask import g, has_app_context
-from dal.database.db_connection import get_conn
+from dal.database.db_connection import conn
 import sys
 
 this = sys.modules[__name__]
@@ -42,8 +42,8 @@ class Transaction:
     def __exit__(self, type, value, traceback):
         if type is None:
             # If the transaction has ended successfully with a clean exit
-            get_conn().commit()
+            conn.commit()
         else:
             # If the transaction has been interrupted due to an unexpected exception
-            get_conn().rollback()
+            conn.rollback()
         get_g().autocommit = True

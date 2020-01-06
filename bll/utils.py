@@ -3,9 +3,14 @@
 # (Agustín Borrego, Daniel Ayala, Carlos Ortiz, Inma Hernández & David Ruiz)
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
-from bll.BLLException import BLLException
+from bll.bll_exception import BLLException
 
 
 def check_not_null(value, msg: str):
     if value is None or (isinstance(value, str) and value.strip() == ""):
+        raise BLLException(msg)
+
+
+def check_field_is_enum(value, iterable, msg: str):
+    if value not in iterable:
         raise BLLException(msg)

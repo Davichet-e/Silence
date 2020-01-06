@@ -4,36 +4,37 @@
 # and it is distributed as open source software under the GNU-GPL 3.0 License.
 
 from functools import wraps
-from dal.database.db_connection import get_conn
+from dal.database.db_connection import conn
 from dal import transaction
 
 # This is the test.utils class, which contains the tools that are needed to
 # create tests.
 
-# The base Test class. Every class with test methods must inherit from it.
+
 class Test:
-    pass
+    """The base Test class. Every class with test methods must inherit from it."""
 
 
-# The exception that is thrown when a test fails
-# If the code inside the test throws an unexpected exception, this one wraps it
 class TestNotPassedException(Exception):
-    pass
+    """The exception that is thrown when a test fails.
+
+    If the code inside the test throws an unexpected exception, this one wraps it"""
 
 
 # Auxiliary methods to be ran before and after every single test
 def _test_setup():
-    # Set the autocommit mode to false
+    """Set the autocommit mode to false"""
     setattr(transaction.this, "autocommit", False)
 
 
 def _test_teardown():
-    # Roll back the data modified by every test
-    get_conn().rollback()
+    """Roll back the data modified by every test"""
+    conn.rollback()
 
 
-# Function decorator for tests that are not expected to throw any exceptions
 def success(func):
+    """Function decorator for tests that are not expected to throw any exceptions"""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         _test_setup()
@@ -49,8 +50,9 @@ def success(func):
     return wrapper
 
 
-# Function decorator for tests that should throw an exception
 def error(exception_type):
+    """Function decorator for tests that should throw an exception"""
+
     def wrapper(func):
         @wraps(func)
         def decorator(*args, **kwargs):

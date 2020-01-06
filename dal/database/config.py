@@ -9,7 +9,7 @@ DB_CONFIG = {
     "port": 3306,
     "user": "iissi_user",
     "password": "iissi$user",
-    "database": "test",
+    "database": "grados",
     "db_engine": "mariadb",
 }
 
