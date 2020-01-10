@@ -68,6 +68,12 @@ def get_by_classroom_id(classroom_id: int) -> Optional[Dict[str, Any]]:
     return res if res else None
 
 
+def get_by_year(year: int) -> Tuple[Dict[str, Any]]:
+    q = "SELECT * FROM Groups WHERE year = %s"
+    params = (year,)
+    return base_dal.query(q, params)
+
+
 def insert(
     name: str, activity: str, year: int, subjectId: int, classroomId: int
 ) -> int:

@@ -3,7 +3,7 @@ from typing import Optional, Tuple, List, Dict, Any
 from flask import Blueprint, Response, jsonify, request
 from werkzeug.datastructures import MultiDict
 
-from bll.BLLException import BLLException
+from bll.bll_exception import BLLException
 from bll import group_bll
 from dal import group_dal
 
@@ -27,7 +27,6 @@ def get_fields() -> tuple:
 @group_api.route("/grupos", methods=["GET"])
 def get_all() -> Tuple[Response, int]:
     """Returns all groups in the system"""
-    response: Response
     response_code = 200
 
     subjects: List[Dict[str, Any]] = list(group_dal.get_all())

@@ -79,6 +79,7 @@ def insert(
     course: int,
     subject_type: str,
     degreeId: int,
+    departmentId: int,
 ) -> int:
     """
     Insert a new subject
@@ -88,8 +89,8 @@ def insert(
         *The OID assigned to the subject that we have inserted
     """
 
-    q = "INSERT INTO subjects (name, acronym, credits, course, type, degreeId) VALUES (%s, %s, %s, %s, %s, %s)"
-    params = (name, acronym, n_credits, course, subject_type, degreeId)
+    q = "INSERT INTO Subjects (name, acronym, credits, course, type, degreeId, departmentId) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    params = (name, acronym, n_credits, course, subject_type, degreeId, departmentId)
     return base_dal.execute(q, params)
 
 
@@ -101,6 +102,7 @@ def update(
     course: int,
     subject_type: str,
     degreeId: int,
+    departmentId: int,
 ) -> int:
     """
     Update one subject
@@ -110,8 +112,17 @@ def update(
         *The OID of the subject that we have updated
     """
 
-    q = "UPDATE subjects SET name = %s, acronym = %s, credits = %s, course = %s, type = %s, degreeId = %s WHERE subjectId = %s"
-    params = (name, acronym, n_credits, course, subject_type, degreeId, oid)
+    q = "UPDATE subjects SET name = %s, acronym = %s, credits = %s, course = %s, type = %s, degreeId = %s, departmentId = %s WHERE subjectId = %s"
+    params = (
+        name,
+        acronym,
+        n_credits,
+        course,
+        subject_type,
+        degreeId,
+        departmentId,
+        oid,
+    )
     return base_dal.execute(q, params)
 
 

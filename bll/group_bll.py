@@ -1,9 +1,9 @@
 from typing import Optional
 
-from bll.BLLException import BLLException
+from bll.bll_exception import BLLException
 from bll.utils import check_not_null
-from dal.DALException import DALException
-from dal import GroupDAL
+from dal.dal_exception import DALException
+from dal import group_dal
 
 
 def insert(
@@ -19,7 +19,7 @@ def insert(
 
     # Insert the new group
     try:
-        oid = GroupDAL.insert(name, activity, year, subjectId, classroomId)
+        oid = group_dal.insert(name, activity, year, subjectId, classroomId)
     except DALException as exc:
         raise BLLException(exc) from exc
 
@@ -39,7 +39,7 @@ def update(
     check_not_null(classroomId, "The group's classroomId cannot be empty")
 
     try:
-        new_oid = GroupDAL.update(oid, name)
+        new_oid = group_dal.update(oid, name, activity, year, subjectId, classroomId)
     except DALException as exc:
         raise BLLException(exc) from exc
 
@@ -51,7 +51,7 @@ def delete(oid: int) -> int:
     check_oid_exists(oid)
 
     try:
-        res = GroupDAL.delete(oid)
+        res = group_dal.delete(oid)
     except DALException as exc:
         raise BLLException(exc) from exc
 
@@ -65,6 +65,7 @@ def delete(oid: int) -> int:
 def check_oid_exists(oid: int) -> None:
     """Check that there exists a group with the provided OID"""
 
-    subj = GroupDAL.get_by_oid(oid)
+    subj = group_dal.get_by_oid(oid)
     if subj is None:
         raise BLLException(f"Cannot find a group with oid {oid}")
+

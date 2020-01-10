@@ -16,52 +16,56 @@ class TestsSubject(Test):
     # Create a subject
     @success
     def create_success(self):
-        subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 3, "Obligatoria", 1)
+        subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 3, "Obligatoria", 1, 1)
 
     # Create a subject with incorrect name
     @error(BLLException)
     def create_incorrect_name(self):
-        subject_bll.insert(" ", "AMN", 6, 3, "Obligatoria", 1)
+        subject_bll.insert(" ", "AMN", 6, 3, "Obligatoria", 1, 1)
 
     # Create a subject with the same name
     @error(BLLException)
     def create_same_name(self):
-        subject_bll.insert("Fundamentos de programación", "AMN", 6, 3, "Obligatoria", 1)
+        subject_bll.insert(
+            "Fundamentos de programación", "AMN", 6, 3, "Obligatoria", 1, 1
+        )
 
     # Create a subject with incorrect acronym
     @error(BLLException)
     def create_incorrect_acronym(self):
-        subject_bll.insert("Asignatura Muy Nueva", " ", 6, 3, "Obligatoria", 1)
+        subject_bll.insert("Asignatura Muy Nueva", " ", 6, 3, "Obligatoria", 1, 1)
 
     # Create a subject with the same acronym
     @error(BLLException)
     def create_same_acronym(self):
-        subject_bll.insert("Asignatura Muy Nueva", "FP", 6, 3, "Obligatoria", 1)
+        subject_bll.insert("Asignatura Muy Nueva", "FP", 6, 3, "Obligatoria", 1, 1)
 
     # Create a subject with incorrect credits
     @error(BLLException)
     def create_incorrect_credits(self):
-        subject_bll.insert("Asignatura Muy Nueva", "AMN", 0, 3, "Obligatoria", 1)
+        subject_bll.insert("Asignatura Muy Nueva", "AMN", 0, 3, "Obligatoria", 1, 1)
 
     # Create a subject with incorrect course
     @error(BLLException)
     def create_incorrect_course(self):
-        subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 7, "Obligatoria", 1)
+        subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 7, "Obligatoria", 1, 1)
 
     # Create a subject with incorrect type
     @error(BLLException)
     def create_incorrect_type(self):
-        subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 3, "Inexistente", 1)
+        subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 3, "Inexistente", 1, 1)
 
     """Update tests"""
     # Update a subject
     @success
     def update_success(self):
-        subject_list = subject_bll.get_all()
+        subject_list = subject_dal.get_all()
         old_subject = subject_list[0]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, "Asignatura Muy Nueva", "AMN", 12, 1, "Obligatoria", 1)
+        subject_bll.update(
+            oid, "Asignatura Muy Nueva", "AMN", 12, 1, "Obligatoria", 1, 1
+        )
 
         subject = subject_dal.get_by_name(old_subject["name"])
         if subject is not None:
@@ -79,7 +83,9 @@ class TestsSubject(Test):
         other_subject = subject_list[1]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, other_subject["name"], "AMN", 12, 1, "Obligatoria", 1)
+        subject_bll.update(
+            oid, other_subject["name"], "AMN", 12, 1, "Obligatoria", 1, 1
+        )
 
     # Update a subject incorrect name
     @error(BLLException)
@@ -88,7 +94,7 @@ class TestsSubject(Test):
         old_subject = subject_list[0]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, " ", "AMN", 12, 1, "Obligatoria", 1)
+        subject_bll.update(oid, " ", "AMN", 12, 1, "Obligatoria", 1, 1)
 
     # Update a subject same acronym
     @error(BLLException)
@@ -106,6 +112,7 @@ class TestsSubject(Test):
             1,
             "Obligatoria",
             1,
+            1,
         )
 
     # Update a subject incorrect acronym
@@ -115,7 +122,9 @@ class TestsSubject(Test):
         old_subject = subject_list[0]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, "Asignatura Muy Nueva", "   ", 12, 1, "Obligatoria", 1)
+        subject_bll.update(
+            oid, "Asignatura Muy Nueva", "   ", 12, 1, "Obligatoria", 1, 1
+        )
 
     # Update a subject incorrect credits
     @error(BLLException)
@@ -124,7 +133,9 @@ class TestsSubject(Test):
         old_subject = subject_list[0]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, "Asignatura Muy Nueva", "AMN", -69, 1, "Obligatoria", 1)
+        subject_bll.update(
+            oid, "Asignatura Muy Nueva", "AMN", -69, 1, "Obligatoria", 1, 1
+        )
 
     # Update a subject incorrect course
     @error(BLLException)
@@ -133,7 +144,9 @@ class TestsSubject(Test):
         old_subject = subject_list[0]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, "Asignatura Muy Nueva", "AMN", 12, -4, "Obligatoria", 1)
+        subject_bll.update(
+            oid, "Asignatura Muy Nueva", "AMN", 12, -4, "Obligatoria", 1, 1
+        )
 
     # Update a subject incorrect type
     @error(BLLException)
@@ -142,13 +155,17 @@ class TestsSubject(Test):
         old_subject = subject_list[0]
         oid = old_subject["subjectId"]
 
-        subject_bll.update(oid, "Asignatura Muy Nueva", "AMN", 12, 1, "Inexistente", 1)
+        subject_bll.update(
+            oid, "Asignatura Muy Nueva", "AMN", 12, 1, "Inexistente", 1, 1
+        )
 
     """Delete tests"""
     # Delete a subject
     @success
     def delete_success(self):
-        oid = subject_bll.insert("Asignatura Muy Nueva", "AMN", 6, 3, "Obligatoria", 1)
+        oid = subject_bll.insert(
+            "Asignatura Muy Nueva", "AMN", 6, 3, "Obligatoria", 1, 1
+        )
         subject = subject_dal.get_by_name("Asignatura Muy Nueva")
 
         if subject is None:

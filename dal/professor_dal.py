@@ -69,6 +69,12 @@ def get_by_email(email: str) -> Optional[Dict[str, Any]]:
     return res[0] if res else None
 
 
+def get_by_department(department_id: int):
+    q = "SELECT * FROM Professors WHERE departmentId = %s"
+    params = (department_id,)
+    return base_dal.query(q, params)
+
+
 def insert(
     office_id: int,
     department_id: int,

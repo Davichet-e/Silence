@@ -1,9 +1,9 @@
 from typing import Optional
 
-from bll.BLLException import BLLException
+from bll.bll_exception import BLLException
 from bll.utils import check_not_null
-from dal.DALException import DALException
-from dal import DepartmentDAL
+from dal.dal_exception import DALException
+from dal import department_dal
 
 
 def insert(name: str) -> int:
@@ -13,7 +13,7 @@ def insert(name: str) -> int:
 
     # Insert the new department
     try:
-        oid = DepartmentDAL.insert(name)
+        oid = department_dal.insert(name)
     except DALException as exc:
         raise BLLException(exc) from exc
 
@@ -27,7 +27,7 @@ def update(oid: int, name: str) -> int:
     check_not_null(name, "The department's name cannot be empty")
 
     try:
-        new_oid = DepartmentDAL.update(oid, name)
+        new_oid = department_dal.update(oid, name)
     except DALException as exc:
         raise BLLException(exc) from exc
 
@@ -39,7 +39,7 @@ def delete(oid: int) -> int:
     check_oid_exists(oid)
 
     try:
-        res = DepartmentDAL.delete(oid)
+        res = department_dal.delete(oid)
     except DALException as exc:
         raise BLLException(exc) from exc
 
@@ -53,6 +53,6 @@ def delete(oid: int) -> int:
 def check_oid_exists(oid: int) -> None:
     """Check that there exists a department with the provided OID"""
 
-    subj = DepartmentDAL.get_by_oid(oid)
+    subj = department_dal.get_by_oid(oid)
     if subj is None:
         raise BLLException(f"Cannot find a department with oid {oid}")

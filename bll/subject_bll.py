@@ -18,6 +18,7 @@ def insert(
     course: int,
     subject_type: str,
     degree_id: int,
+    department_id: int,
 ) -> int:
     """Insert a new subject"""
 
@@ -27,17 +28,18 @@ def insert(
     check_not_null(course, "The subject's course cannot be empty")
     check_not_null(subject_type, "The subject's subject type cannot be empty")
     check_not_null(degree_id, "The subject's degree_id cannot be empty")
+    check_not_null(department_id, "The subject's department_id cannot be empty")
 
     check_field_is_enum(
         subject_type,
-        {"Teoria", "Laboratorio"},
-        f"The field 'subject_type' must be one of (Teoría, Laboratorio)",
+        {"Formacion Basica", "Optativa", "Obligatoria"},
+        f"The field 'subject_type' must be one of ('Formacion Basica', 'Optativa', 'Obligatoria')",
     )
 
     # Insert the new subject
     try:
         oid = subject_dal.insert(
-            name, acronym, n_credits, course, subject_type, degree_id
+            name, acronym, n_credits, course, subject_type, degree_id, department_id
         )
     except DALException as exc:
         raise BLLException(exc) from exc
@@ -53,6 +55,7 @@ def update(
     course: int,
     subject_type: str,
     degree_id: int,
+    department_id: int,
 ) -> int:
     """Update a subject"""
 
@@ -63,16 +66,24 @@ def update(
     check_not_null(course, "The subject's course cannot be empty")
     check_not_null(subject_type, "The subject's subject type cannot be empty")
     check_not_null(degree_id, "The subject's degree_id cannot be empty")
+    check_not_null(department_id, "The subject's department_id cannot be empty")
 
     check_field_is_enum(
         subject_type,
-        {"Teoria", "Laboratorio"},
-        f"The field 'subject_type' must be one of (Teoria, Laboratorio)",
+        {"Formacion Basica", "Optativa", "Obligatoria"},
+        f"The field 'subject_type' must be one of ('Formacion Basica', 'Optativa', 'Obligatoria')",
     )
 
     try:
         new_oid = subject_dal.update(
-            oid, name, acronym, n_credits, course, subject_type, degree_id
+            oid,
+            name,
+            acronym,
+            n_credits,
+            course,
+            subject_type,
+            degree_id,
+            department_id,
         )
     except DALException as exc:
         raise BLLException(exc) from exc

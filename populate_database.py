@@ -9,7 +9,7 @@ from dal.database.db_connection import conn
 # This shouldn't be modified, it uses the create_database.sql file
 def create_database(verbose=False) -> None:
     cursor = conn.cursor()
-    with open("grados(1).sql", encoding="utf-8") as f:
+    with open("foo.sql", encoding="utf-8") as f:
         for stmt in f.read().split(";"):
             if stmt.strip():
                 if verbose:
